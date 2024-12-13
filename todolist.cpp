@@ -42,17 +42,6 @@ int main(){
     list <Todoitem> TodoitemList;
     list <Todoitem>::iterator it;
     ifstream fi("data.txt");
- //    Todoitem test;
- //    test.create("This is a test",1);
- //    TodoitemList.push_back(test);
- // 
- //    Todoitem test1;
- //    test1.create("This is a test number 1",2);
- //    TodoitemList.push_back(test1);
- //
- //    Todoitem test2;
- //    test2.create("This is a test 2",3);
- //    TodoitemList.push_back(test2);
 
     string input_user;
     string input_add;
@@ -62,6 +51,7 @@ int main(){
     int cnt = 0;
     string data;
 
+    // read the data
     while(getline(fi,data)){
         string tmp = "";
         vector<string> row;
@@ -106,7 +96,7 @@ int main(){
         if(input_user == "q"){
             for(it = TodoitemList.begin();it != TodoitemList.end();++it){
                 fo << it->getDescription() << "|"  << it->getId() << "|" << it->IsCompleted() << endl;
-            }
+            } // Stored data in "data.txt"
             fo.close();
             break;
         }
