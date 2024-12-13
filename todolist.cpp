@@ -5,6 +5,7 @@
 #include <list>
 #include <fstream>
 #include <ctime>
+#include "KMP.cpp"
 
 
 using namespace std;
@@ -41,17 +42,21 @@ class Todoitem{
 
 int main(){
     string version = "v.0.0";
+
     list <Todoitem> TodoitemList;
     list <Todoitem>::iterator it;
     ifstream fi("data.txt");
     srand(time(NULL));
 
+
+    KMP findword;
     string input_user;
     string input_add;
     string input_mark_ok;
     int input_mark;
     char input_delete;
     string data;
+    string find_input;
 
     // read the data 
     while(getline(fi,data)){
@@ -76,25 +81,32 @@ int main(){
         system("cls");
         cout << "Welcome to To D[adx] list " << version << endl;
 
+        // SHOWING REMAINING TASKS
         for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
             string status = (it->IsCompleted() ? "Done" : "Not Done");
             cout << it->getId() << " | " << it->getDescription() << " | " << status << endl;
         }
         cout << endl << endl;
 
-        //if there is no task
+        // SHOW IF THERE'S NO TASK REMAINING
         if(TodoitemList.empty()){
             cout << "Add your first to do" << endl;
         }
         cout << endl << endl;
 
-        //menu
+        // MENU
+
         cout << "[a]dd new to do" << endl;
         cout << "[m]ark the task is done"<<endl;
+        cout << "[f]ind note by keyword:" <<endl;
+        cout << "[d]elete all the tasks:" << endl;
         cout << "[q]uit" << endl;
 
         cout << "Choose your choice: ";
         getline(cin,input_user);
+
+        // QUIT THE PROGRAM
+
         if(input_user == "q"){
             for(it = TodoitemList.begin();it != TodoitemList.end();++it){
                 fo << it->getDescription() << "|"  << it->getId() << "|" << it->IsCompleted() << endl;
@@ -102,7 +114,11 @@ int main(){
             fo.close();
             break;
         }
-        else if(input_user == "a"){
+
+
+        // ADD NOTES
+
+        else if(input_user == "a"){ 
             cout << "Node down your description:";
             cin.clear();
             getline(cin,input_add);
@@ -110,6 +126,9 @@ int main(){
             Add.create(input_add);
             TodoitemList.push_back(Add);
         }
+
+        // MARK AND DELETE NOTE
+
         else if(input_user == "m"){
             cout << "Choose the task's ordered you want to mark:";
             cin >> input_mark;
@@ -129,6 +148,31 @@ int main(){
                 }
             }
         }
+
+        // FIND FILES
+
+        else if(input_user == "f"){
+            system("cls");
+            cout << "Type the notes you want to find:" ;
+            cin >> find_input; 
+            cout << "Here some notes we've found: \n";
+            for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
+                string tmp = it->getDescription();
+                if(findword.find(tmp, find_input)){
+                    cout << "|" << it->getId() << "|" << it->getDescription() << "|" << endl;
+                }
+            }
+            system("pause");
+        }
+
+        // DELETE ALL TASKS
+
+        else if(input_user == "d"){
+            TodoitemList.clear();
+        }
+
+        // ADVOID UNECESSARY WORDS
+
         else{
             if(input_user != "y" ||
                input_user != "Y" || 
