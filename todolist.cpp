@@ -4,6 +4,8 @@
 #include <vector>
 #include <list>
 #include <fstream>
+#include <ctime>
+
 
 using namespace std;
 
@@ -21,8 +23,8 @@ class Todoitem{
         string getDescription() {return description;}
         int getId(){return id;}
 
-        void create(string new_description,int id){
-            this->id = id;
+        void create(string new_description){
+            id = rand() % 1000 + 30000;
             description = new_description;
         }
 
@@ -42,16 +44,16 @@ int main(){
     list <Todoitem> TodoitemList;
     list <Todoitem>::iterator it;
     ifstream fi("data.txt");
+    srand(time(NULL));
 
     string input_user;
     string input_add;
     string input_mark_ok;
     int input_mark;
     char input_delete;
-    int cnt = 0;
     string data;
 
-    // read the data
+    // read the data 
     while(getline(fi,data)){
         string tmp = "";
         vector<string> row;
@@ -104,9 +106,8 @@ int main(){
             cout << "Node down your description:";
             cin.clear();
             getline(cin,input_add);
-            ++cnt; 
             Todoitem Add;
-            Add.create(input_add,cnt);
+            Add.create(input_add);
             TodoitemList.push_back(Add);
         }
         else if(input_user == "m"){
