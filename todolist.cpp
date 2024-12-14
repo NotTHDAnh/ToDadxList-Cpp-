@@ -55,8 +55,11 @@ int main(){
     string input_mark_ok;
     int input_mark;
     char input_delete;
+    char input_deletion_choice;
     string data;
     string find_input;
+
+    vector<int> listToDelete;
 
     // read the data 
     while(getline(fi,data)){
@@ -96,10 +99,11 @@ int main(){
 
         // MENU
 
+        cout << "------------------------------------\n";
         cout << "[a]dd new to do" << endl;
         cout << "[m]ark the task is done"<<endl;
         cout << "[f]ind note by keyword:" <<endl;
-        cout << "[d]elete all the tasks:" << endl;
+        cout << "[d]elete tasks:" << endl;
         cout << "[q]uit" << endl;
 
         cout << "Choose your choice: ";
@@ -119,7 +123,7 @@ int main(){
         // ADD NOTES
 
         else if(input_user == "a"){ 
-            cout << "Node down your description:";
+            cout << "Note down your description:";
             cin.clear();
             getline(cin,input_add);
             Todoitem Add;
@@ -130,21 +134,26 @@ int main(){
         // MARK AND DELETE NOTE
 
         else if(input_user == "m"){
+            if(TodoitemList.size() == 1){
+                auto it = TodoitemList.begin();
+                it->mark(true);
+                continue;
+            }
+
             cout << "Choose the task's ordered you want to mark:";
             cin >> input_mark;
-            cout << "[m]ark or [u]nmark:";
-            cin >> input_mark_ok;
-            if(input_mark_ok == "m"){
-                cout << "Do you want to delete this task from the list([Y]es or [N]o):";
-                cin >> input_delete;
-            }
             for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
                 if(input_mark == it->getId()){
-                    if(input_mark_ok == "m") it->mark(true); else it->mark(false);
+                    if(it->IsCompleted() == true){
+                        cout << "Do you want to delete this task?[Y]es or [N]o:";
+                        cin >> input_delete;
+                    }
+                    else it->mark(true);
+
                     if(input_delete == 'Y' || input_delete == 'y'){
                         TodoitemList.erase(it);
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -168,7 +177,26 @@ int main(){
         // DELETE ALL TASKS
 
         else if(input_user == "d"){
-            TodoitemList.clear();
+            cout << "Do you want to delete all the notes [1] or just the finished notes [2]:";
+            cin >> input_deletion_choice;
+            if(input_deletion_choice == '1'){
+                TodoitemList.clear();
+            }
+            else if(input_deletion_choice == '2'){
+                for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
+                    if(it->IsCompleted()){
+                        listToDelete.push_back(it->getId());
+                    }
+                }
+                for(int x : listToDelete){
+                    for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
+                        if(x == it->getId()){
+                            TodoitemList.erase(it);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         // ADVOID UNECESSARY WORDS
