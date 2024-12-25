@@ -10,6 +10,8 @@
 
 using namespace std;
 
+string version = "v.0.0";
+
 class Todoitem{
     private:
         int id;
@@ -40,50 +42,16 @@ class Todoitem{
         }
 };
 
-int main(){
-    string version = "v.0.0";
-
-    list <Todoitem> TodoitemList;
-    list <Todoitem>::iterator it;
-    ifstream fi("data.txt");
-    srand(time(NULL));
-
-
-    KMP findword;
+class Todolist_Menu{
+private:
+    list<Todoitem> TodoitemList;
     string input_user;
-    string input_add;
-    string input_mark_ok;
-    int input_mark;
-    char input_delete;
-    char input_deletion_choice;
-    string data;
-    string find_input;
-
-    vector<int> listToDelete;
-
-    // read the data 
-    while(getline(fi,data)){
-        string tmp = "";
-        vector<string> row;
-        for(char c : data){
-            if(c == '|'){
-                row.push_back(tmp);
-                tmp = "";
-                continue;
-            }
-            tmp += c;
-        }
-        row.push_back(tmp);
-        Todoitem DATA; DATA.create(row[0], stoi(row[1]), stoi(row[2]));
-        TodoitemList.push_back(DATA);
-    }
-    fi.close();
-    ofstream fo("data.txt");
-
-    while(1){
+    list<Todoitem>::iterator it;
+public:
+    Todolist_Menu(list<Todoitem> TodoitemList){
+        this->TodoitemList = TodoitemList;
         system("cls");
         cout << "Welcome to To D[adx] list " << version << endl;
-
         // SHOWING REMAINING TASKS
         for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
             string status = (it->IsCompleted() ? "Done" : "Not Done");
@@ -107,110 +75,206 @@ int main(){
         cout << "[q]uit" << endl;
 
         cout << "Choose your choice: ";
-        getline(cin,input_user);
+    }
+};
 
-        // QUIT THE PROGRAM
-
-        if(input_user == "q"){
-            for(it = TodoitemList.begin();it != TodoitemList.end();++it){
-                fo << it->getDescription() << "|"  << it->getId() << "|" << it->IsCompleted() << endl;
-            } // Stored data in "data.txt"
-            fo.close();
-            break;
-        }
-
-
-        // ADD NOTES
-
-        else if(input_user == "a"){ 
-            cout << "Note down your description:";
-            cin.clear();
-            getline(cin,input_add);
-            Todoitem Add;
-            Add.create(input_add);
-            TodoitemList.push_back(Add);
-        }
-
-        // MARK AND DELETE NOTE
-
-        else if(input_user == "m"){
-            if(TodoitemList.size() == 1){
-                auto it = TodoitemList.begin();
-                it->mark(true);
-                continue;
+class StoreData{
+private:
+    list<Todoitem> TodoitemList;
+    string input_user;
+    list<Todoitem>::iterator it;
+    string data;
+public:
+    void ReadData(list <Todoitem> &TodoitemList){
+        ifstream fi("data.txt");
+        while(getline(fi,data)){
+            string tmp = "";
+            vector<string> row;
+            for(char c : data){
+                if(c == '|'){
+                    row.push_back(tmp);
+                    tmp = "";
+                    continue;
+                }
+                tmp += c;
             }
+            row.push_back(tmp);
+            Todoitem DATA; DATA.create(row[0], stoi(row[1]), stoi(row[2]));
+            TodoitemList.push_back(DATA);
+        }
+        fi.close();
+    }
 
-            cout << "Choose the task's ordered you want to mark:";
-            cin >> input_mark;
-            for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
-                if(input_mark == it->getId()){
-                    if(it->IsCompleted() == true){
-                        cout << "Do you want to delete this task?[Y]es or [N]o:";
-                        cin >> input_delete;
+    void setTodoitemList(list <Todoitem> TodoitemList){
+        this->TodoitemList = TodoitemList;
+    }
+
+    void Store(list<Todoitem> &TodoitemList){
+        ofstream fo("data.txt");
+        setTodoitemList(TodoitemList);
+        for(it = TodoitemList.begin();it != TodoitemList.end();++it){
+            fo << it->getDescription() << "|"  << it->getId() << "|" << it->IsCompleted() << endl;
+        } // Stored data in "data.txt"
+        fo.close();
+    }
+
+};
+
+class Menu_Options : StoreData{
+private:
+    list <Todoitem> TodoitemList;
+    string input_user;
+    list<Todoitem>::iterator it;
+    KMP findword;
+    int mark;
+    string input_add;
+    string input_mark_ok;
+    int input_mark;
+    char input_deletion_choice;
+    string data;
+    string find_input;
+    vector<int> listToDelete;
+public:
+    Menu_Options(){
+        this->mark = 1;
+    }
+
+    void printMENU(){
+        Todolist_Menu MENU(TodoitemList);
+    }
+
+    void getstarted(){
+        ReadData(TodoitemList);
+    }
+    bool getmark(){
+        return this->mark;
+    }
+    void QUIT(){
+        Store(this->TodoitemList);
+        mark = 0;
+    }
+
+    void ADDNOTE(){
+        cout << "Write down your note! : ";
+        cin.clear();
+        getline(cin,input_add);
+        Todoitem Add;
+        Add.create(input_add);
+        TodoitemList.push_back(Add);
+    }
+
+    void MARK_NOTE(){
+        cout << "Choose the task's ordered you want to mark:";
+        char input_delete;
+        cin >> input_mark;
+        for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
+            if(input_mark == it->getId()){
+                if(it->IsCompleted() == true){
+                    cout << "Do you want to unmark it?[Y]es or [No]: ";
+                    char option; 
+                    cin >> option;
+                    if(option == 'Y' || option == 'y'){
+                        it->mark(false);
+                        return;
                     }
-                    else it->mark(true);
+                    cout << "Do you want to delete this task?[Y]es or [N]o:";
+                    cin >> input_delete;
+                }
+                else it->mark(true);
 
-                    if(input_delete == 'Y' || input_delete == 'y'){
+                if(input_delete == 'Y' || input_delete == 'y'){
+                    TodoitemList.erase(it);
+                    break;
+                }
+            }
+        }
+    }
+
+    void Find_by_Keyword(){
+        system("cls");
+        cout << "Type the notes you want to find:" ;
+        cin >> find_input; 
+        cout << "Here some notes we've found: \n";
+        for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
+            string tmp = it->getDescription();
+            if(findword.find(tmp, find_input)){
+                cout << "|" << it->getId() << "|" << it->getDescription() << "|" << endl;
+            }
+        }
+        system("pause");
+    }
+
+    void Delete_Options(){
+        cout << "Do you want to delete all the notes [1] or just the finished notes [2]:";
+        cin >> input_deletion_choice;
+        if(input_deletion_choice == '1'){
+            TodoitemList.clear();
+        }
+        else if(input_deletion_choice == '2'){
+            for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
+                if(it->IsCompleted()){
+                    listToDelete.push_back(it->getId());
+                }
+            }
+            for(int x : listToDelete){
+                for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
+                    if(x == it->getId()){
                         TodoitemList.erase(it);
                         break;
                     }
                 }
             }
         }
+    }
+};
+
+int main(){
+    srand(time(NULL));
+
+    string input_user;
+    // read the data 
+
+    Menu_Options OPTIONS;
+    OPTIONS.getstarted();
+
+    while(OPTIONS.getmark()){
+        system("cls");
+
+        OPTIONS.printMENU();
+        getline(cin,input_user);
+
+        // QUIT THE PROGRAM
+
+        if(input_user == "q"){
+            OPTIONS.QUIT();
+        }
+
+
+        // ADD NOTES
+
+        else if(input_user == "a"){ 
+            OPTIONS.ADDNOTE();
+        }
+
+        // MARK AND DELETE NOTE
+
+        else if(input_user == "m"){
+            OPTIONS.MARK_NOTE();
+        }
 
         // FIND FILES
 
         else if(input_user == "f"){
-            system("cls");
-            cout << "Type the notes you want to find:" ;
-            cin >> find_input; 
-            cout << "Here some notes we've found: \n";
-            for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
-                string tmp = it->getDescription();
-                if(findword.find(tmp, find_input)){
-                    cout << "|" << it->getId() << "|" << it->getDescription() << "|" << endl;
-                }
-            }
-            system("pause");
+            OPTIONS.Find_by_Keyword();
+            continue;
         }
 
         // DELETE ALL TASKS
 
         else if(input_user == "d"){
-            cout << "Do you want to delete all the notes [1] or just the finished notes [2]:";
-            cin >> input_deletion_choice;
-            if(input_deletion_choice == '1'){
-                TodoitemList.clear();
-            }
-            else if(input_deletion_choice == '2'){
-                for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
-                    if(it->IsCompleted()){
-                        listToDelete.push_back(it->getId());
-                    }
-                }
-                for(int x : listToDelete){
-                    for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
-                        if(x == it->getId()){
-                            TodoitemList.erase(it);
-                            break;
-                        }
-                    }
-                }
-            }
+            OPTIONS.Delete_Options();
         }
 
-        // ADVOID UNECESSARY WORDS
-
-        else{
-            if(input_user != "y" ||
-               input_user != "Y" || 
-               input_user != "N" ||
-               input_user != "n" ) continue;
-
-            system("cls");
-            cout << "Please choose the correct letter!\n";
-            system("pause");
-        }
     }
     return 0;
 }
