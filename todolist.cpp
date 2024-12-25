@@ -45,7 +45,6 @@ class Todoitem{
 class Todolist_Menu{
 private:
     list<Todoitem> TodoitemList;
-    string input_user;
     list<Todoitem>::iterator it;
 public:
     Todolist_Menu(list<Todoitem> TodoitemList){
@@ -81,11 +80,10 @@ public:
 class StoreData{
 private:
     list<Todoitem> TodoitemList;
-    string input_user;
     list<Todoitem>::iterator it;
-    string data;
 public:
     void ReadData(list <Todoitem> &TodoitemList){
+        string data;
         ifstream fi("data.txt");
         while(getline(fi,data)){
             string tmp = "";
@@ -123,16 +121,10 @@ public:
 class Menu_Options : StoreData{
 private:
     list <Todoitem> TodoitemList;
-    string input_user;
     list<Todoitem>::iterator it;
     KMP findword;
     int mark;
-    string input_add;
-    string input_mark_ok;
-    int input_mark;
-    char input_deletion_choice;
     string data;
-    string find_input;
     vector<int> listToDelete;
 public:
     Menu_Options(){
@@ -155,6 +147,7 @@ public:
     }
 
     void ADDNOTE(){
+        string input_add;
         cout << "Write down your note! : ";
         cin.clear();
         getline(cin,input_add);
@@ -164,8 +157,10 @@ public:
     }
 
     void MARK_NOTE(){
-        cout << "Choose the task's ordered you want to mark:";
+        int input_mark;
         char input_delete;
+
+        cout << "Choose the task's ordered you want to mark:";
         cin >> input_mark;
         for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
             if(input_mark == it->getId()){
@@ -191,6 +186,8 @@ public:
     }
 
     void Find_by_Keyword(){
+        string find_input;
+
         system("cls");
         cout << "Type the notes you want to find:" ;
         cin >> find_input; 
@@ -205,6 +202,8 @@ public:
     }
 
     void Delete_Options(){
+        char input_deletion_choice;
+
         cout << "Do you want to delete all the notes [1] or just the finished notes [2]:";
         cin >> input_deletion_choice;
         if(input_deletion_choice == '1'){
