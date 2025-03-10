@@ -76,7 +76,7 @@ public:
                 cout << "                                                                                         |\n";
                 cout << "ID: " << it->getID() << endl;
                 cout << "TASK: ";
-                cout << it->getDescription();
+                cout << it->getDescription() << endl;
                 if(it->IsImportant()) cout << "*\n";
                 string isDone = (it->IsCompleted())?"DONE":"NOT DONE";
                 cout << "STATUS:" << isDone << endl;

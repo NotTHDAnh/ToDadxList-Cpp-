@@ -24,12 +24,12 @@ class Todoitem : public Calendar{
         bool IsImportant(){ return Important;}
 
         void create(string new_description){
-            id = rand() % 100 + 100;
+            id = rand() % 900 + 100;
             description = new_description;
         }
 
         void create(string new_description,string category){
-            id = rand() % 100 + 100;
+            id = rand() % 900 + 100;
             description = new_description;
             this->category = category;
         }
