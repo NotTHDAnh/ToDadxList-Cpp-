@@ -76,8 +76,8 @@ public:
                 cout << "                                                                                         |\n";
                 cout << "ID: " << it->getID() << endl;
                 cout << "TASK: ";
-                cout << it->getDescription() << endl;
-                if(it->IsImportant()) cout << "*\n";
+                cout << it->getDescription();
+                cout << endl;
                 string isDone = (it->IsCompleted())?"DONE":"NOT DONE";
                 cout << "STATUS:" << isDone << endl;
                 cout << "DEAD LINE:" << it->getDeadline() << " - " << countHowManyDaysTillDeadline(it->getDeadline())<< endl;
@@ -95,6 +95,7 @@ public:
                 cout << "TASK: ";
                 cout << it->getDescription() << ((it->IsImportant())?"*":"")<< endl;
                 string isDone = (it->IsCompleted())?"DONE":"NOT DONE";
+                cout << endl;
                 cout << "STATUS:" << isDone << endl;
                 cout << "DEAD LINE:" << it->getDeadline() << " - " << countHowManyDaysTillDeadline(it->getDeadline())<< endl;
     
