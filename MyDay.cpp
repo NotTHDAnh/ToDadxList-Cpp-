@@ -27,6 +27,10 @@ public:
         this->TodoitemList = TodoitemList;
         this->status = 1;
     }
+    bool is_number(const std::string& s){
+        return !s.empty() && std::find_if(s.begin(), 
+            s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+    }
     void setStatus(int status){
         this->status = status;
     }
@@ -157,10 +161,14 @@ public:
     void markAsDone(){
         system("cls");
         cout << "ID OF THE TASK YOU WANT TO CHECK:";
-        int id_to_mark;
-        cin >> id_to_mark;
+        string id_to_mark;
+        while(!is_number(id_to_mark)){
+            cin >> id_to_mark;
+            system("cls");
+            cout << "ID OF THE TASK YOU WANT TO CHECK:";
+        }
         for(it = TodoitemList.begin(); it != TodoitemList.end();it++){
-            if(it->getID() == id_to_mark && it->getCategory() == category){
+            if(it->getID() == stoi(id_to_mark) && it->getCategory() == category){
                 bool sta = it->IsCompleted();
                 it->mark(!sta);
             }
@@ -203,8 +211,11 @@ public:
     void editingTask(){
         cout << "ID of the task you want to edit: ";
         string ID;
-        getline(cin, ID);
-        system("cls");
+        while(!is_number(ID)){
+            system("cls");
+            cout << "ID of the task you want to edit: ";
+            getline(cin, ID);
+        }
         for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
             if(it->getID() == stoi(ID)){
                 string newDescription;
@@ -221,11 +232,15 @@ public:
     }
 
     void markAsImportant(){
-        int ID;
+        string ID;
         cout << "ID of the task you want to mark:";
-        cin >> ID;
+        while(!is_number(ID)){
+            system("cls");
+            cout << "ID of the task you want to mark:";
+            cin >> ID;
+        }
         for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
-            if(it->getID() == ID){
+            if(it->getID() == stoi(ID)){
                 it->setImportant(!it->IsImportant());
                 break;
             }

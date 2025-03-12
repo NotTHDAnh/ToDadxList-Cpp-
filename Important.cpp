@@ -96,11 +96,13 @@ void init(){
     }
 
     void deleteTask(){
-        int ID;
-        cout << "ID of the task you want to delete:";
-        cin >> ID;
+        string ID;
+        while(!is_number(ID)){
+            cout << "ID of the task you want to delete:";
+            cin >> ID;
+        }
         for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
-            if(it->getID() == ID){
+            if(it->getID() == stoi(ID)){
                 it->setImportant(!it->IsImportant());
                 break;
             }
@@ -123,7 +125,12 @@ void init(){
     void editingTask(){
         cout << "ID of the task you want to edit: ";
         string ID;
-        getline(cin, ID);
+
+        while(!is_number(ID)){
+            system("cls");
+            cout << "ID of the task you want to edit: ";
+            getline(cin, ID);
+        }
         system("cls");
         for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
             if(it->getID() == stoi(ID)){
