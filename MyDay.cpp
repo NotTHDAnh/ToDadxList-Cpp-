@@ -176,16 +176,20 @@ public:
     }
 
     void deleteTask(){
-        system("cls");
         cout << "ID of the task you want to delete: ";
-        int id_to_delete;
+        string id_to_delete;
         cin >> id_to_delete;
+        while(!is_number(id_to_delete)){
+            cout << "ID of the task you want to delete: ";
+            cin >> id_to_delete;
+        }
         for(it = TodoitemList.begin(); it != TodoitemList.end();++it){
-            if(it->getID() == id_to_delete){
+            if(it->getID() == stoi(id_to_delete)){
                 TodoitemList.erase(it);
                 break;
             }
         }
+        cout << "Task Not Found!";
     }
 
     void keywordFinding(){

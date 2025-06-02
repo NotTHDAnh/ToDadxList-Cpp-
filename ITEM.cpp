@@ -41,7 +41,7 @@ class Todoitem : public Calendar{
         }
 
         void create(string description, int id, bool isDone, string category){
-            this-> id = id;
+            this->id = id;
             this->description = description;
             this->isDone = isDone;
             this->category = category;
